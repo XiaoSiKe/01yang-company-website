@@ -12,44 +12,35 @@ sources:
 
 defaultWorkspace: website
 
+# 私密变量通过控制台“变量和缓存 → 通用变量组”关联：
+# 01yang-company-website-prod-secrets（OpenAPI ID 43787）。不要在YAML写入私钥。
+
 stages:
-  build_stage:
-    name: 检查与构建
+  release_stage:
+    name: 检查、构建与独立发布
     jobs:
       build_job:
-        name: 云端构建静态官网
+        name: 云端构建与官网受限SSH发布
         runsOn:
           group: public/cn-hongkong
           container: build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alinux3:latest
           instanceType: MEDIUM_2C4G
         timeoutMinutes: 20
+        plugins:
+          - name: 官网构建或发布失败通知
+            plugin: EmailPlugin
+            triggerState:
+              - fail
+            with:
+              email: 1241798750@qq.com
         steps:
           build_step:
             name: 固定环境、检查与构建
             step: Command
             with:
               run: bash deploy/ci-build.sh
-          upload_step:
-            name: 上传带版本与校验清单的静态制品
-            step: ArtifactUpload
+          publish_step:
+            name: 校验后发布官网（不修改备案开放开关）
+            step: Command
             with:
-              uploadType: flowPublic
-              artifact: website
-              filePath:
-                - dist/client/
-
-  deploy_stage:
-    name: 独立目录发布
-    jobs:
-      deploy_job:
-        name: 官网预部署或发布（不修改备案开放开关）
-        component: VMDeploy
-        with:
-          artifact: $[stages.build_stage.build_job.upload_step.artifacts.website]
-          machineGroup: __COMPANY_MACHINE_GROUP_ID__
-          artifactDownloadPath: /var/www/01yang-company-website/shared/incoming/website.tgz
-          executeUser: 01yang-deploy
-          run: |
-            set -eu
-            /usr/local/lib/01yang-company-website/release.sh \
-              /var/www/01yang-company-website/shared/incoming/website.tgz
+              run: bash deploy/ci-publish.sh

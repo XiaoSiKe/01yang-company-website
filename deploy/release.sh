@@ -6,6 +6,7 @@ readonly ROOT=/var/www/01yang-company-website
 readonly VERIFY=/usr/local/lib/01yang-company-website/verify-archive.py
 readonly CONTROL=/etc/01yang-company-website
 staging=''
+archive_staging=''
 switched=0
 old_target=''
 
@@ -39,6 +40,9 @@ cleanup() {
   if [[ -n "$staging" && "$staging" == "$ROOT/releases/.incoming."* && -d "$staging" ]]; then
     rm -rf -- "$staging"
   fi
+  if [[ -n "$archive_staging" && "$archive_staging" == "$ROOT/shared/archives/.incoming."* ]]; then
+    rm -f -- "$archive_staging"
+  fi
   exit "$result"
 }
 trap cleanup EXIT
@@ -47,12 +51,12 @@ trap 'exit 129' HUP
 trap 'exit 130' INT
 
 [[ "$(id -un)" == '01yang-deploy' ]] || die '必须以官网专属用户 01yang-deploy 执行。'
-[[ -d "$ROOT/releases" && -d "$ROOT/shared/successful" ]] || die '官网初始化尚未完成。'
-for directory in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful"; do
+[[ -d "$ROOT/releases" && -d "$ROOT/shared/successful" && -d "$ROOT/shared/archives" ]] || die '官网初始化尚未完成。'
+for directory in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful" "$ROOT/shared/archives"; do
   [[ "$(readlink -f "$directory")" == "$directory" ]] || die '官网目录存在意外重定向，停止发布。'
 done
 exec 9>"$ROOT/shared/deploy.lock"
-flock -n 9 || die '另一个官网发布正在执行，请稍后重试。'
+flock -w 120 9 || die '等待上一官网发布释放锁超时，请稍后重试。'
 game_before=$(game_get)
 curl --fail --silent --show-error --max-time 15 --resolve arch.25thgame.vip:443:127.0.0.1 'https://arch.25thgame.vip/game.html' -o /dev/null
 if [[ -e "$ROOT/current" || -L "$ROOT/current" ]]; then
@@ -99,6 +103,17 @@ for extension in js css; do
   site_get "${asset#"$target"}" > /dev/null || die '官网客户端资源健康检查失败。'
 done
 test "$(game_get)" = "$game_before" || die '25th 响应在发布过程中发生变化，停止官网发布。'
+if [[ "${1:-}" != --rollback && ! -f "$ROOT/shared/archives/$release.tgz" ]]; then
+  archive_staging=$(mktemp "$ROOT/shared/archives/.incoming.XXXXXXXX")
+  install -m 600 "$1" "$archive_staging"
+  digest=$(sha256sum "$archive_staging" | cut -d ' ' -f 1)
+  printf '%s  %s\n' "$digest" "$release.tgz" > "$ROOT/shared/archives/$release.tgz.sha256"
+  mv -T "$archive_staging" "$ROOT/shared/archives/$release.tgz"
+  archive_staging=''
+fi
+if [[ "${1:-}" != --rollback ]]; then
+  (cd "$ROOT/shared/archives" && sha256sum --quiet --check "$release.tgz.sha256") || die '官网归档校验失败，停止标记成功。'
+fi
 if [[ -n "$old_target" && "$old_target" != "$target" ]]; then
   ln -s "$old_target" "$ROOT/.previous.$$"
   mv -Tf "$ROOT/.previous.$$" "$ROOT/previous"
@@ -118,6 +133,7 @@ while IFS= read -r expired; do
   [[ ! -L "$ROOT/previous" || "$candidate" != "$(readlink -f "$ROOT/previous")" ]] || continue
   [[ -d "$candidate" && ! -L "$candidate" ]] || continue
   rm -rf -- "$candidate"
+  rm -f -- "$ROOT/shared/archives/$expired.tgz" "$ROOT/shared/archives/$expired.tgz.sha256"
   rm -- "$ROOT/shared/successful/$expired"
-  printf '已按保留策略清理官网旧版本：%s（可从对应云效制品恢复）\n' "$expired"
+  printf '已按保留策略清理官网旧版本及归档：%s（可从对应Git提交重新构建）\n' "$expired"
 done < <(find "$ROOT/shared/successful" -maxdepth 1 -type f -printf '%f\n' | sort -r | tail -n +6)

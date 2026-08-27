@@ -20,9 +20,15 @@ async function main() {
       ['官网', 'https://www.01yang.space/', config.OPS_EXPECT_PUBLIC === 'true' ? 200 : 503],
       ['25th', 'https://arch.25thgame.vip/game.html', 200],
     ]) {
-      const response = await fetch(url, { signal: AbortSignal.timeout(15000), redirect: 'manual' });
-      console.log(`${name}：HTTP ${response.status}，预期 ${expected}`);
-      if (response.status !== expected) process.exitCode = 1;
+      try {
+        const response = await fetch(url, { signal: AbortSignal.timeout(15000), redirect: 'manual' });
+        console.log(`${name}：HTTP ${response.status}，预期 ${expected}`);
+        if (response.status !== expected) process.exitCode = 1;
+        await response.body?.cancel();
+      } catch (error) {
+        console.error(`${name}：连接检查失败（${error.cause?.code ?? error.name}）。`);
+        process.exitCode = 1;
+      }
     }
     return;
   }
@@ -39,7 +45,6 @@ async function main() {
   let suffix;
   if (command === 'sync') {
     const content = readFileSync('deploy/aliyun-flow.yml', 'utf8');
-    if (content.includes('__COMPANY_MACHINE_GROUP_ID__')) throw new Error('请先把官网主机组ID写入版本化YAML。');
     if (!process.env.YUNXIAO_SETUP_TOKEN) throw new Error('配置同步需临时YUNXIAO_SETUP_TOKEN，不使用五年只读令牌。');
     method = 'PUT';
     suffix = '';
@@ -53,6 +58,15 @@ async function main() {
   }
   const token = command === 'sync' ? process.env.YUNXIAO_SETUP_TOKEN : config.YUNXIAO_TOKEN;
   if (!token) throw new Error('官网令牌尚未配置。');
+  if (command === 'sync') {
+    const target = await fetch(base, {
+      headers: { 'x-yunxiao-token': token },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!target.ok || (await target.json()).name !== '01yang-company-website-prod') {
+      throw new Error('目标不是官网专属流水线，拒绝覆盖。');
+    }
+  }
   const response = await fetch(`${base}${suffix}`, {
     method,
     headers: { 'Content-Type': 'application/json', 'x-yunxiao-token': token },

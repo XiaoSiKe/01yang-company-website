@@ -9,7 +9,7 @@
 - 正式官网域名：[www.01yang.space](https://www.01yang.space)
 - 合作邮箱：[1241798750@qq.com](mailto:1241798750@qq.com)
 
-本仓库已公开，用于官网源码管理。网站采用静态构建与阿里云 ECS 独立部署；正式开放以备案信息核对及运维验收为准，不以仓库公开或流水线成功代替上线确认。
+本仓库已公开，用于官网源码管理。网站采用静态构建与阿里云 ECS 独立目录部署；目前公网保持维护态，正式开放以备案信息核对及运维验收为准，不以仓库公开或流水线成功代替上线确认。
 
 ## 页面与功能
 
@@ -67,7 +67,7 @@ public/               品牌、二维码、占位图片及 robots/sitemap
 design-system/        设计规范和首页规则
 docs/PRD.md           产品需求文档
 docs/运维手册.md       环境、发布、备案门槛与恢复方法
-deploy/               云效 YAML、Nginx 模板和发布工具
+deploy/               云效 YAML、专用 SSH 发布工具及 Nginx/TLS 模板
 scripts/              静态制品检查与本地运维助手
 tests/                制品安全检查器测试
 THIRD_PARTY_NOTICES.md 第三方组件与资源说明
@@ -77,6 +77,6 @@ THIRD_PARTY_NOTICES.md 第三方组件与资源说明
 
 - 官网域名在 `app/layout.tsx`、`public/robots.txt` 和 `public/sitemap.xml` 中配置，调整时需保持一致。
 - 服务内容、项目占位图与联系方式集中在 `app/page.tsx`，更新时同步核对对应资源。
-- 运维入口见 [中文运维手册](docs/运维手册.md)，真实配置保存在项目之外；网站开发与构建不读取运维令牌。
+- 运维统一入口见 [中文运维手册](docs/运维手册.md)，包含 GitHub CI、云效构建与专用 SSH 发布、凭据轮换、备份恢复及实际验收状态；真实配置保存在项目之外，网站开发与构建不读取运维令牌。
 - 当前画廊仍为占位展示。正式展示项目案例前应替换真实素材；上线前核对邮箱、二维码和备案信息。
 - 第三方组件与资源的来源及使用条件见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，请保留原有声明。

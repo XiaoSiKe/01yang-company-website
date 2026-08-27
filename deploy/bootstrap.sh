@@ -21,9 +21,9 @@ assert_plain_path() {
     [[ ! -L "$current" ]] || { printf '受管路径存在符号链接，停止以免影响其它站点：%s\n' "$current" >&2; exit 1; }
   done
 }
-for path in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful" "$ROOT/shared/incoming" \
+for path in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful" "$ROOT/shared/incoming" "$ROOT/shared/archives" \
   "$CONTROL" "$CONTROL/nginx-tls.conf" "$CONTROL/tls-ready" "$CONTROL/public-enabled" "$CONFIG" \
-  "$LIB" "$LIB/release.sh" "$LIB/verify-archive.py" /var/backups/01yang-company-website \
+  "$LIB" "$LIB/release.sh" "$LIB/verify-archive.py" "$LIB/receive-release.sh" /var/backups/01yang-company-website \
   /var/lib/01yang-company-website/acme /var/lib/01yang-company-website/deploy-home \
   /etc/letsencrypt-01yang /var/lib/letsencrypt-01yang /var/log/letsencrypt-01yang \
   /etc/systemd/system/01yang-company-certbot.service /etc/systemd/system/01yang-company-certbot.timer; do
@@ -67,11 +67,12 @@ install -d -m 755 "$CONTROL" "$LIB" /var/lib/01yang-company-website /var/lib/01y
 if ! id 01yang-deploy > /dev/null 2>&1; then
   useradd --system --user-group --create-home --home-dir /var/lib/01yang-company-website/deploy-home --shell /bin/bash 01yang-deploy
 fi
-for directory in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful" "$ROOT/shared/incoming"; do
+for directory in "$ROOT" "$ROOT/releases" "$ROOT/shared" "$ROOT/shared/static" "$ROOT/shared/successful" "$ROOT/shared/incoming" "$ROOT/shared/archives"; do
   install -d -m 755 -o 01yang-deploy -g 01yang-deploy "$directory"
 done
 install -m 755 "$SOURCE/release.sh" "$LIB/release.sh"
 install -m 755 "$SOURCE/verify-archive.py" "$LIB/verify-archive.py"
+install -m 755 "$SOURCE/receive-release.sh" "$LIB/receive-release.sh"
 install -m 644 "$SOURCE/nginx.conf" "$CONTROL/nginx-tls.conf"
 
 if [[ -f "$SOURCE/deploy-key.pub" ]]; then
@@ -80,9 +81,30 @@ if [[ -f "$SOURCE/deploy-key.pub" ]]; then
   grep -q '^restrict ssh-ed25519 ' "$SOURCE/deploy-key.pub"
   install -d -m 700 -o 01yang-deploy -g 01yang-deploy "$key_dir"
   if [[ -f "$key_dir/authorized_keys" ]]; then
-    cmp -s "$SOURCE/deploy-key.pub" "$key_dir/authorized_keys" || { printf '官网用户已有不同SSH授权，停止覆盖。\n' >&2; exit 1; }
+    grep -Fxq -f "$SOURCE/deploy-key.pub" "$key_dir/authorized_keys" || { printf '官网用户已有不同SSH授权，停止覆盖。\n' >&2; exit 1; }
   else
     install -m 600 -o 01yang-deploy -g 01yang-deploy "$SOURCE/deploy-key.pub" "$key_dir/authorized_keys"
+  fi
+fi
+
+if [[ -f "$SOURCE/ci-deploy-key.pub" ]]; then
+  key_dir=/var/lib/01yang-company-website/deploy-home/.ssh
+  assert_plain_path "$key_dir/authorized_keys"
+  [[ $(wc -l < "$SOURCE/ci-deploy-key.pub") -eq 1 ]] || { printf 'CI公钥文件必须只有一行授权。\n' >&2; exit 1; }
+  grep -q '^restrict,command="/usr/local/lib/01yang-company-website/receive-release.sh" ssh-ed25519 ' "$SOURCE/ci-deploy-key.pub"
+  ssh-keygen -lf "$SOURCE/ci-deploy-key.pub" > /dev/null
+  ci_key_blob=$(awk '{print $3}' "$SOURCE/ci-deploy-key.pub")
+  if [[ -f "$key_dir/authorized_keys" ]] && \
+    awk -v key="$ci_key_blob" '{for(i=1;i<=NF;i++) if($i==key) {print; next}}' "$key_dir/authorized_keys" | \
+    grep -Fvxq -f "$SOURCE/ci-deploy-key.pub"; then
+    printf 'CI公钥已有不同权限的授权，拒绝重复或扩大授权。\n' >&2; exit 1
+  fi
+  install -d -m 700 -o 01yang-deploy -g 01yang-deploy "$key_dir"
+  if [[ ! -f "$key_dir/authorized_keys" ]]; then
+    install -m 600 -o 01yang-deploy -g 01yang-deploy "$SOURCE/ci-deploy-key.pub" "$key_dir/authorized_keys"
+  elif ! grep -Fxq -f "$SOURCE/ci-deploy-key.pub" "$key_dir/authorized_keys"; then
+    # 只追加本次官网CI公钥，保留原有人工运维公钥，不覆盖已有授权。
+    cat "$SOURCE/ci-deploy-key.pub" >> "$key_dir/authorized_keys"
   fi
 fi
 
