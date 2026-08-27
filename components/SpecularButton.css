@@ -28,8 +28,8 @@
   cursor: pointer;
   outline: none;
   transition: transform 150ms ease;
-  backdrop-filter: blur(var(--sb-blur));
   -webkit-backdrop-filter: blur(var(--sb-blur));
+  backdrop-filter: blur(var(--sb-blur));
 }
 
 .specular-button:active {

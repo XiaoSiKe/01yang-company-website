@@ -44,3 +44,18 @@ The technology marks used by LogoLoop are provided through React Icons:
 - Simple Icons: https://simpleicons.org/ — CC0 1.0 Universal
 
 Product names and trademarks remain the property of their respective owners.
+
+## 项目占位图片：Picsum / Unsplash
+
+`public/projects/` 中的图片为原项目画廊所用 Picsum 图片的 900 × 1200 本地副本，
+仅用于展示占位，不代表公司的真实项目成果。
+
+| Picsum ID | 摄影师 | 原作链接 |
+| --- | --- | --- |
+| 1015 | Alexey Topolyanskiy | https://unsplash.com/photos/-oWyJoSqBRM |
+| 1018 | Andrew Ridley | https://unsplash.com/photos/Kt5hRENuotI |
+| 1039 | Andrew Coelho | https://unsplash.com/photos/VB-w_3dnyvI |
+| 1043 | Christian Joudrey | https://unsplash.com/photos/mWRR1xj95hg |
+| 1044 | Steve Carter | https://unsplash.com/photos/Ixp4YhCKZkI |
+
+适用许可：https://unsplash.com/license 。保留作者与来源信息；这些图片不适用组件的代码许可证。

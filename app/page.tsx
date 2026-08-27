@@ -74,11 +74,11 @@ const techLogos = [
 ];
 
 const projectItems = [
-  { image: 'https://picsum.photos/id/1015/900/1200', label: 'AI SaaS' },
-  { image: 'https://picsum.photos/id/1018/900/1200', label: '模型服务' },
-  { image: 'https://picsum.photos/id/1039/900/1200', label: '软件开发' },
-  { image: 'https://picsum.photos/id/1043/900/1200', label: '网络服务' },
-  { image: 'https://picsum.photos/id/1044/900/1200', label: 'AI 教育' },
+  { image: '/projects/1015.jpg', label: 'AI SaaS' },
+  { image: '/projects/1018.jpg', label: '模型服务' },
+  { image: '/projects/1039.jpg', label: '软件开发' },
+  { image: '/projects/1043.jpg', label: '网络服务' },
+  { image: '/projects/1044.jpg', label: 'AI 教育' },
 ];
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
@@ -623,7 +623,18 @@ export default function Home() {
               </div>
 
               <footer className="footer">
-                <p>© 2026 福州零一扬网络科技有限公司</p>
+                <p>
+                  © 2026 福州零一扬网络科技有限公司
+                  <br />
+                  <a
+                    className="footer__icp"
+                    href="https://beian.miit.gov.cn/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    闽ICP备2026024313号-2
+                  </a>
+                </p>
               </footer>
             </div>
           </div>

@@ -6,10 +6,10 @@
 
 - 公司全称：福州零一扬网络科技有限公司
 - 品牌名称：零一扬网络科技
-- 官网域名规划：[www.01yang.space](https://www.01yang.space)
+- 正式官网域名：[www.01yang.space](https://www.01yang.space)
 - 合作邮箱：[1241798750@qq.com](mailto:1241798750@qq.com)
 
-本仓库用于官网源码管理与备份。上传 GitHub 不代表网站已部署，当前仍可通过本地开发环境预览。
+本仓库已公开，用于官网源码管理。网站采用静态构建与阿里云 ECS 独立部署；正式开放以备案信息核对及运维验收为准，不以仓库公开或流水线成功代替上线确认。
 
 ## 页面与功能
 
@@ -24,7 +24,7 @@
 ## 技术栈
 
 - React、TypeScript 与 Next.js App Router 结构
-- Vinext / Vite 开发与构建
+- Vinext / Vite 开发与静态导出，Nginx 提供生产静态资源
 - Tailwind CSS 与组件 CSS
 - GSAP 交互和滚动动效
 - Three.js、React Three Fiber 与 OGL 图形效果
@@ -32,7 +32,7 @@
 
 ## 本地开发
 
-需要 Node.js `>=22.13.0` 和 npm。克隆仓库后，在项目根目录执行：
+使用 `.nvmrc` 固定的 Node.js `24.16.0` 和 npm。克隆仓库后，在项目根目录执行：
 
 ```bash
 npm ci
@@ -47,29 +47,36 @@ npm run dev
 npm run typecheck
 npm run lint
 npm run build
+npm run verify:static
 ```
 
-构建成功后，可以通过以下命令预览生产版本：
+也可运行 `npm run ci:verify` 完成上述检查。静态制品位于 `dist/client/`，不是 `out/`。构建成功后，可以通过以下命令预览静态版本：
 
 ```bash
 npm run start
 ```
+
+静态预览不使用热更新；重新构建后请重启预览进程并刷新浏览器。
 
 ## 目录说明
 
 ```text
 app/                  页面、全局样式与 SEO 元数据
 components/           导航、按钮、背景与动效组件
-public/               公司 Logo、微信二维码与分享图片
+public/               品牌、二维码、占位图片及 robots/sitemap
 design-system/        设计规范和首页规则
 docs/PRD.md           产品需求文档
+docs/运维手册.md       环境、发布、备案门槛与恢复方法
+deploy/               云效 YAML、Nginx 模板和发布工具
+scripts/              静态制品检查与本地运维助手
+tests/                制品安全检查器测试
 THIRD_PARTY_NOTICES.md 第三方组件与资源说明
 ```
 
 ## 维护说明
 
-- 官网域名在 `app/layout.tsx`、`app/robots.ts` 和 `app/sitemap.ts` 中配置，调整时需保持一致。
+- 官网域名在 `app/layout.tsx`、`public/robots.txt` 和 `public/sitemap.xml` 中配置，调整时需保持一致。
 - 服务内容、项目占位图与联系方式集中在 `app/page.tsx`，更新时同步核对对应资源。
-- 密钥、访问令牌等敏感配置不要写入源码；`.env*`、依赖目录和构建产物已由 `.gitignore` 排除。
-- 正式上线前，替换项目占位图片，确认邮箱可收件、微信二维码可识别，并补齐适用的备案及政策信息。
+- 运维入口见 [中文运维手册](docs/运维手册.md)，真实配置保存在项目之外；网站开发与构建不读取运维令牌。
+- 当前画廊仍为占位展示。正式展示项目案例前应替换真实素材；上线前核对邮箱、二维码和备案信息。
 - 第三方组件与资源的来源及使用条件见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，请保留原有声明。
