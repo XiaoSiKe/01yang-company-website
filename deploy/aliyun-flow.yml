@@ -1,0 +1,55 @@
+name: 01yang-company-website-prod
+
+sources:
+  website:
+    type: git
+    name: 零一扬官网公共源码
+    endpoint: https://github.com/01-Yang/01yang-company-website.git
+    branch: main
+    branchesFilter: ^main$
+    triggerEvents:
+      - push
+
+defaultWorkspace: website
+
+stages:
+  build_stage:
+    name: 检查与构建
+    jobs:
+      build_job:
+        name: 云端构建静态官网
+        runsOn:
+          group: public/cn-hongkong
+          container: build-steps-public-registry.cn-beijing.cr.aliyuncs.com/build-steps/alinux3:latest
+          instanceType: MEDIUM_2C4G
+        timeoutMinutes: 20
+        steps:
+          build_step:
+            name: 固定环境、检查与构建
+            step: Command
+            with:
+              run: bash deploy/ci-build.sh
+          upload_step:
+            name: 上传带版本与校验清单的静态制品
+            step: ArtifactUpload
+            with:
+              uploadType: flowPublic
+              artifact: website
+              filePath:
+                - dist/client/
+
+  deploy_stage:
+    name: 独立目录发布
+    jobs:
+      deploy_job:
+        name: 官网预部署或发布（不修改备案开放开关）
+        component: VMDeploy
+        with:
+          artifact: $[stages.build_stage.build_job.upload_step.artifacts.website]
+          machineGroup: __COMPANY_MACHINE_GROUP_ID__
+          artifactDownloadPath: /var/www/01yang-company-website/shared/incoming/website.tgz
+          executeUser: 01yang-deploy
+          run: |
+            set -eu
+            /usr/local/lib/01yang-company-website/release.sh \
+              /var/www/01yang-company-website/shared/incoming/website.tgz

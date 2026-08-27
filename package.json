@@ -3,14 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=22.13.0"
+    "node": "24.16.0"
   },
   "scripts": {
     "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "vinext start",
+    "build": "vinext build && node scripts/prepare-static.mjs",
+    "start": "vite preview --config deploy/preview.config.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "typecheck": "tsc --noEmit --incremental false"
+    "typecheck": "tsc --noEmit --incremental false",
+    "verify:static": "node scripts/verify-static.mjs",
+    "ci:verify": "npm run typecheck && npm run lint -- --no-cache && npm run build && npm run verify:static",
+    "release:package": "bash deploy/package-release.sh",
+    "ops:status": "node scripts/ops.mjs status",
+    "ops:runs": "node scripts/ops.mjs runs",
+    "ops:check": "node scripts/ops.mjs check"
   },
   "dependencies": {
     "@react-three/fiber": "^9.7.0",
@@ -24,9 +30,6 @@
     "three": "^0.185.1"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@cloudflare/workers-types": "4.20260515.1",
-    "@openai/sites-vite-plugin": "^0.1.0 || ^0.2.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
@@ -40,8 +43,7 @@
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vinext": "1.0.0-beta.3",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
+    "vite": "8.0.13"
   },
   "type": "module"
 }

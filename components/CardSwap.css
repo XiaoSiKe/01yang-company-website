@@ -29,8 +29,8 @@
   transform-origin: bottom left;
   transform-style: preserve-3d;
   backface-visibility: hidden;
-  backdrop-filter: blur(28px) saturate(145%);
   -webkit-backdrop-filter: blur(28px) saturate(145%);
+  backdrop-filter: blur(28px) saturate(145%);
   will-change: transform;
 }
 

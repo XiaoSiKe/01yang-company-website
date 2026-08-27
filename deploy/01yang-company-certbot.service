@@ -1,0 +1,8 @@
+[Unit]
+Description=Renew TLS certificate for 01yang company website only
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot renew --quiet --config-dir /etc/letsencrypt-01yang --work-dir /var/lib/letsencrypt-01yang --logs-dir /var/log/letsencrypt-01yang --deploy-hook "/usr/sbin/nginx -t && /bin/systemctl reload nginx"

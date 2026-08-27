@@ -54,7 +54,7 @@ export default function AccordionGallery({
         const isActive = activeIndex === index;
         const content = (
           <>
-            {/* Remote placeholders are intentional until the real project imagery is supplied. */}
+            {/* Placeholder images are kept locally until real project imagery is supplied. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="accordion-gallery__image"
