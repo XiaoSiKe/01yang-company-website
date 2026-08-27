@@ -73,12 +73,23 @@ async function main() {
     body,
     signal: AbortSignal.timeout(15000),
   });
+  if (command === 'status' && response.status === 404) {
+    const target = await fetch(base, {
+      headers: { 'x-yunxiao-token': token },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (target.ok && (await target.json()).name === '01yang-company-website-prod') {
+      console.log('官网流水线存在，尚无运行记录。');
+      return;
+    }
+  }
   if (!response.ok) throw new Error(`云效请求失败：HTTP ${response.status}；未输出响应内容以避免泄露配置。`);
   const data = await response.json();
   if (command === 'sync') {
     if (data !== true) throw new Error('云效未确认配置同步成功。');
     console.log('版本化YAML已同步到官网专属流水线。');
   } else {
+    if (Array.isArray(data) && data.length === 0) console.log('官网流水线尚无运行记录。');
     for (const run of Array.isArray(data) ? data : [data]) {
       console.log(JSON.stringify({ runId: run.id ?? run.pipelineRunId, status: run.status, triggerMode: run.triggerMode, startTime: run.startTime, endTime: run.endTime }));
     }
