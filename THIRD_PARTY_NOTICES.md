@@ -2,7 +2,7 @@
 
 ## React Bits
 
-The PillNav and Beams implementations in this website are adapted from:
+The PillNav, Beams, and SpecularButton implementations in this website are adapted from:
 
 - React Bits by David Haz
 - Source: https://github.com/DavidHDev/react-bits
@@ -35,3 +35,12 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## React Icons and Simple Icons
+
+The technology marks used by LogoLoop are provided through React Icons:
+
+- React Icons: https://react-icons.github.io/react-icons/ — MIT License
+- Simple Icons: https://simpleicons.org/ — CC0 1.0 Universal
+
+Product names and trademarks remain the property of their respective owners.

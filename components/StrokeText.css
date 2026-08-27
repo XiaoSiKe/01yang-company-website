@@ -1,0 +1,124 @@
+.stroke-text {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  color: var(--stroke-fill-color);
+  font-size: min(var(--stroke-font-size), 1em);
+  font-weight: var(--stroke-font-weight);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.stroke-text__glyph {
+  display: inline-flex;
+  width: 1em;
+  height: 1.16em;
+  flex: 0 0 1em;
+}
+
+.stroke-text__accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.stroke-text__space {
+  display: inline-block;
+  width: 0.38em;
+  flex: 0 0 0.38em;
+}
+
+.stroke-text__glyph svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.stroke-text__outline {
+  fill: transparent;
+  stroke: var(--stroke-color);
+  stroke-width: var(--stroke-width);
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0;
+  animation: stroke-text-draw var(--stroke-draw-duration) var(--stroke-ease) forwards;
+  animation-delay: var(--stroke-draw-delay);
+}
+
+.stroke-text__fill {
+  fill: var(--stroke-fill-color);
+}
+
+.stroke-text__wipe {
+  transform: scaleX(0);
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: stroke-text-wipe var(--stroke-draw-duration) var(--stroke-ease) forwards;
+  animation-delay: var(--stroke-fill-start);
+}
+
+.stroke-text[data-fill-mode='fade'] .stroke-text__fill {
+  opacity: 0;
+  animation: stroke-text-fade var(--stroke-draw-duration) var(--stroke-ease) forwards;
+  animation-delay: var(--stroke-fill-start);
+}
+
+@keyframes stroke-text-draw {
+  0% {
+    stroke-dashoffset: 2000;
+    opacity: 0;
+  }
+
+  4% {
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes stroke-text-wipe {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes stroke-text-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stroke-text__outline,
+  .stroke-text__wipe,
+  .stroke-text[data-fill-mode='fade'] .stroke-text__fill {
+    animation: none;
+  }
+
+  .stroke-text__outline {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  .stroke-text__wipe {
+    transform: scaleX(1);
+  }
+
+  .stroke-text[data-fill-mode='fade'] .stroke-text__fill {
+    opacity: 1;
+  }
+}

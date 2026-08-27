@@ -1,0 +1,70 @@
+.depth-text {
+  display: inline-block;
+  max-width: 100%;
+  color: var(--depth-face-color);
+  font-size: min(var(--depth-font-size), 1em);
+  font-weight: var(--depth-font-weight);
+  letter-spacing: var(--depth-letter-spacing, normal);
+  line-height: 1;
+  perspective: var(--depth-perspective);
+  white-space: nowrap;
+}
+
+.depth-text__accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.depth-text__scene,
+.depth-text__stack {
+  display: inline-grid;
+  transform-style: preserve-3d;
+}
+
+.depth-text__scene {
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.depth-text__stack {
+  grid-template-areas: 'text';
+}
+
+.depth-text__layer,
+.depth-text__face {
+  grid-area: text;
+  backface-visibility: hidden;
+  text-rendering: geometricPrecision;
+}
+
+.depth-text__layer {
+  color: var(--depth-layer-color);
+}
+
+.depth-text__face {
+  position: relative;
+  z-index: 1;
+  color: var(--depth-face-color);
+  transform: translateZ(0);
+}
+
+.depth-text[data-shadow='true'] .depth-text__face {
+  text-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.08),
+    0 18px 38px rgba(0, 0, 0, 0.68);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .depth-text__scene {
+    transform: none !important;
+    will-change: auto;
+  }
+}

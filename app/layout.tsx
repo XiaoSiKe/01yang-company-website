@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.01yang.space'),
   title: {
-    default: '零一扬科技｜从 0 到 1，让智能真正落地',
+    default: '福州零一扬网络科技有限公司｜从零到一，让人工智能真正落地',
     template: '%s｜零一扬科技',
   },
   description:
@@ -33,21 +33,21 @@ export const metadata: Metadata = {
     locale: 'zh_CN',
     url: '/',
     siteName: '零一扬科技',
-    title: '零一扬科技｜从 0 到 1，让智能真正落地',
-    description: '让每一个想法，拥有智能生长的力量。',
+    title: '福州零一扬网络科技有限公司',
+    description: '从零到一，让人工智能真正落地！',
     images: [
       {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: '零一扬科技：从 0 到 1，让智能真正落地',
+        alt: '福州零一扬网络科技有限公司：从零到一，让人工智能真正落地',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: '零一扬科技｜从 0 到 1，让智能真正落地',
-    description: '让每一个想法，拥有智能生长的力量。',
+    title: '福州零一扬网络科技有限公司',
+    description: '从零到一，让人工智能真正落地！',
     images: ['/og.png'],
   },
   icons: {

@@ -9,17 +9,76 @@ import {
   Cloud,
   GraduationCap,
   Network,
+  Pause,
+  Play,
 } from 'lucide-react';
 import { gsap } from 'gsap';
+import Image from 'next/image';
+import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from 'react-icons/si';
 import { useEffect, useRef, useState, type ComponentType, type SVGProps } from 'react';
+import AccordionGallery from '../components/AccordionGallery';
 import Beams from '../components/ClientBeams';
+import CardSwap, { Card } from '../components/CardSwap';
+import LogoLoop from '../components/LogoLoop';
 import PillNav from '../components/PillNav';
+import ShinyText, { type ShinyTextProps } from '../components/ShinyText';
+import SpecularButton, { type SpecularButtonProps } from '../components/SpecularButton';
+import StrokeDepthText from '../components/StrokeDepthText';
 
 const navigation = [
   { label: '首页', href: '#home' },
-  { label: '服务', href: '#services' },
-  { label: '关于', href: '#about' },
+  { label: '关于零一', href: '#about' },
+  { label: '服务与合作', href: '#services' },
   { label: '联系', href: '#contact' },
+];
+
+const specularButtonAppearance = {
+  size: 'lg',
+  radius: 18,
+  tint: '#ffffff',
+  tintOpacity: 0,
+  blur: 0,
+  textColor: '#ffffff',
+  lineColor: '#ffffff',
+  baseColor: '#525252',
+  intensity: 1,
+  shineSize: 10,
+  shineFade: 40,
+  thickness: 1,
+  speed: 0.35,
+  followMouse: true,
+  proximity: 250,
+  autoAnimate: false,
+} satisfies SpecularButtonProps;
+
+const shinyTextAppearance = {
+  speed: 2,
+  delay: 0,
+  color: 'rgba(255, 255, 255, 0.78)',
+  shineColor: '#ffffff',
+  spread: 120,
+  direction: 'left',
+  yoyo: false,
+  pauseOnHover: false,
+} satisfies Omit<ShinyTextProps, 'text'>;
+
+const techLogos = [
+  { node: <SiReact />, title: 'React', href: 'https://react.dev' },
+  { node: <SiNextdotjs />, title: 'Next.js', href: 'https://nextjs.org' },
+  {
+    node: <SiTypescript />,
+    title: 'TypeScript',
+    href: 'https://www.typescriptlang.org',
+  },
+  { node: <SiTailwindcss />, title: 'Tailwind CSS', href: 'https://tailwindcss.com' },
+];
+
+const projectItems = [
+  { image: 'https://picsum.photos/id/1015/900/1200', label: 'AI SaaS' },
+  { image: 'https://picsum.photos/id/1018/900/1200', label: '模型服务' },
+  { image: 'https://picsum.photos/id/1039/900/1200', label: '软件开发' },
+  { image: 'https://picsum.photos/id/1043/900/1200', label: '网络服务' },
+  { image: 'https://picsum.photos/id/1044/900/1200', label: 'AI 教育' },
 ];
 
 type Icon = ComponentType<SVGProps<SVGSVGElement>>;
@@ -229,6 +288,7 @@ function useActiveSection() {
 
 export default function Home() {
   const pageRef = useRef<HTMLElement>(null);
+  const [isServiceSwapPaused, setIsServiceSwapPaused] = useState(false);
   const activeHref = useActiveSection();
   usePageMotion(pageRef);
 
@@ -239,138 +299,180 @@ export default function Home() {
       </a>
 
       <PillNav
-        logoAlt="零一扬科技"
+        logo="/01yang-logo.jpg"
+        logoAlt="零一扬网络科技"
         items={navigation}
         activeHref={activeHref}
-        ease="power2.out"
+        ease="power2.easeOut"
         baseColor="#000000"
         pillColor="#ffffff"
         hoveredPillTextColor="#ffffff"
-        pillTextColor="#000000"
+        pillTextColor="#ffffff"
       />
 
-      <main ref={pageRef} id="main-content">
-        <section id="home" className="hero" aria-labelledby="hero-title">
-          <div className="hero__beams" aria-hidden="true">
-            <Beams
-              beamWidth={2}
-              beamHeight={15}
-              beamNumber={12}
-              lightColor="#ffffff"
-              speed={5.2}
-              noiseIntensity={1.75}
-              scale={0.2}
-              rotation={0}
-            />
-          </div>
-          <div className="hero__veil" aria-hidden="true" />
+      <main ref={pageRef} id="main-content" className="site-shell">
+        <div className="site-background" aria-hidden="true">
+          <Beams
+            beamWidth={2}
+            beamHeight={15}
+            beamNumber={16}
+            lightColor="#ffffff"
+            speed={5.2}
+            noiseIntensity={1.75}
+            scale={0.2}
+            rotation={33}
+          />
+          <div className="site-background__veil" />
+        </div>
 
+        <section id="home" className="hero" aria-labelledby="hero-title">
           <div className="hero__content">
-            <p className="hero__eyebrow" data-hero-reveal>
-              <span aria-hidden="true" />
-              福州零一扬网络科技有限公司
-            </p>
-            <h1 id="hero-title" data-hero-reveal>
-              从 0 到 1，
-              <br />
-              让智能真正落地。
+            <h1 id="hero-title">
+              <StrokeDepthText text="福州零一扬网络科技有限公司" letterSpacing={-3.92} />
             </h1>
-            <p className="hero__slogan" data-hero-reveal>
-              让每一个想法，拥有智能生长的力量。
-            </p>
-            <p className="hero__summary" data-hero-reveal>
-              以 AI 为引擎，连接模型、软件与业务，为企业提供从基础设施到产品落地的一站式数字化能力。
+            <p className="hero__slogan">
+              <StrokeDepthText text="从零到一， 让人工智能真正落地！" letterSpacing={-3.11} />
             </p>
 
             <div className="hero__actions" aria-label="首页操作" data-hero-reveal>
-              <a className="button button--light" href="#services">
+              <SpecularButton
+                {...specularButtonAppearance}
+                className="hero__specular-button"
+                onClick={() => document.querySelector('#services')?.scrollIntoView()}
+              >
                 探索我们的服务
                 <ArrowDown size={17} strokeWidth={1.8} aria-hidden="true" />
-              </a>
-              <a className="button button--glass" href="#contact">
+              </SpecularButton>
+              <SpecularButton
+                {...specularButtonAppearance}
+                className="hero__specular-button"
+                onClick={() => document.querySelector('#contact')?.scrollIntoView()}
+              >
                 开始合作
                 <ArrowUpRight size={17} strokeWidth={1.8} aria-hidden="true" />
-              </a>
+              </SpecularButton>
             </div>
           </div>
 
-          <div className="hero__foot" aria-hidden="true" data-hero-reveal>
-            <span>AI SaaS</span>
-            <span>MODEL API</span>
-            <span>SOFTWARE</span>
-            <span>AI EDUCATION</span>
-          </div>
         </section>
 
-        <section id="services" className="section services" aria-labelledby="services-title">
-          <div className="section__inner">
-            <div className="section-heading">
-              <p className="section-kicker" data-reveal>
-                <span>01</span>
-                WHAT WE BUILD
-              </p>
-              <div>
-                <h2 id="services-title" data-reveal>
-                  把 AI 能力，
-                  <br />
-                  变成真正可用的产品。
-                </h2>
-                <p className="section-intro" data-reveal>
-                  不追逐概念，只围绕真实需求构建清晰、可靠、可持续迭代的数字化解决方案。
+        <section className="section services" aria-labelledby="services-title">
+          <div id="services" className="section__inner">
+            <div className="services__layout">
+              <div className="section-heading services__heading">
+                <p className="section-kicker" data-reveal>
+                  <span>01</span>
+                  WHAT WE BUILD
                 </p>
+                <div>
+                  <h2 id="services-title" data-reveal>
+                    <ShinyText
+                      text={'把 AI 能力，\n变成真正可用的产品。'}
+                      {...shinyTextAppearance}
+                    />
+                  </h2>
+                  <p className="section-intro" data-reveal>
+                    不追逐概念，只围绕真实需求构建清晰、可靠、可持续迭代的数字化解决方案。
+                  </p>
+                </div>
+              </div>
+
+              <div className="service-swap-stage" data-reveal>
+                <CardSwap
+                  cardDistance={60}
+                  verticalDistance={70}
+                  delay={5000}
+                  pauseOnHover={false}
+                  paused={isServiceSwapPaused}
+                >
+                  {services.map((service) => {
+                    const ServiceIcon = service.icon;
+                    const titleId = `service-${service.number}-title`;
+
+                    return (
+                      <Card
+                        key={service.number}
+                        className={`service-card${
+                          service.featured ? ' service-card--featured' : ''
+                        }`}
+                        aria-labelledby={titleId}
+                      >
+                        <div className="service-card__top">
+                          <span className="service-card__number">{service.number}</span>
+                          <span className="service-card__icon" aria-hidden="true">
+                            <ServiceIcon width={22} height={22} strokeWidth={1.6} />
+                          </span>
+                        </div>
+                        <div className="service-card__body">
+                          <p>{service.englishTitle}</p>
+                          <h3 id={titleId}>
+                            <ShinyText text={service.title} {...shinyTextAppearance} />
+                          </h3>
+                          <p className="service-card__description">{service.description}</p>
+                        </div>
+                        <ul className="tag-list" aria-label={`${service.title}能力`}>
+                          {service.tags.map((tag) => (
+                            <li key={tag}>{tag}</li>
+                          ))}
+                        </ul>
+                      </Card>
+                    );
+                  })}
+                </CardSwap>
+                <SpecularButton
+                  {...specularButtonAppearance}
+                  size="sm"
+                  className="service-swap-control"
+                  onClick={() => setIsServiceSwapPaused((isPaused) => !isPaused)}
+                >
+                  {isServiceSwapPaused ? (
+                    <Play size={14} strokeWidth={1.8} aria-hidden="true" />
+                  ) : (
+                    <Pause size={14} strokeWidth={1.8} aria-hidden="true" />
+                  )}
+                  {isServiceSwapPaused ? '继续轮换' : '暂停轮换'}
+                </SpecularButton>
               </div>
             </div>
 
-            <div className="service-grid">
-              {services.map((service) => {
-                const ServiceIcon = service.icon;
-
-                return (
-                  <article
-                    key={service.number}
-                    className={`service-card${service.featured ? ' service-card--featured' : ''}`}
-                    data-reveal
-                  >
-                    <div className="service-card__top">
-                      <span className="service-card__number">{service.number}</span>
-                      <span className="service-card__icon" aria-hidden="true">
-                        <ServiceIcon width={22} height={22} strokeWidth={1.6} />
-                      </span>
-                    </div>
-                    <div className="service-card__body">
-                      <p>{service.englishTitle}</p>
-                      <h3>{service.title}</h3>
-                      <p className="service-card__description">{service.description}</p>
-                    </div>
-                    <ul className="tag-list" aria-label={`${service.title}能力`}>
-                      {service.tags.map((tag) => (
-                        <li key={tag}>{tag}</li>
-                      ))}
-                    </ul>
-                  </article>
-                );
-              })}
+            <div className="services__projects" data-reveal>
+              <div className="services__projects-heading">
+                <p>PROJECTS / COMING SOON</p>
+                <h3>
+                  <ShinyText text="项目实践" {...shinyTextAppearance} />
+                </h3>
+                <p>这里将逐步收录零一扬的产品、合作项目与技术实践。</p>
+              </div>
+              <AccordionGallery
+                items={projectItems}
+                defaultIndex={2}
+                expandRatio={0.52}
+                trigger="hover"
+                ariaLabel="项目实践预览"
+              />
             </div>
           </div>
         </section>
 
-        <section id="approach" className="section approach" aria-labelledby="approach-title">
-          <div className="section__inner">
-            <p className="section-kicker section-kicker--dark" data-reveal>
-              <span>02</span>
-              HOW WE WORK
-            </p>
-
-            <div className="approach__statement">
-              <h2 id="approach-title" data-reveal>
-                不只交付代码，
-                <br />
-                更交付一条从想法到价值的路径。
-              </h2>
-              <p data-reveal>
-                技术只是手段。我们把产品判断、体验设计与工程能力放在同一个目标下，
-                让每一步都更接近真实价值。
+        <section className="section approach" aria-labelledby="approach-title">
+          <div id="approach" className="section__inner">
+            <div className="section-heading">
+              <p className="section-kicker section-kicker--dark" data-reveal>
+                <span>02</span>
+                HOW WE WORK
               </p>
+              <div>
+                <h2 id="approach-title" data-reveal>
+                  <ShinyText
+                    text={'不只交付代码，\n更交付一条从想法到价值的路径。'}
+                    {...shinyTextAppearance}
+                  />
+                </h2>
+                <p className="section-intro" data-reveal>
+                  技术只是手段。我们把产品判断、体验设计与工程能力放在同一个目标下，
+                  让每一步都更接近真实价值。
+                </p>
+              </div>
             </div>
 
             <div className="process-list">
@@ -381,7 +483,9 @@ export default function Home() {
                     <span>{step.number}</span>
                     <span>{step.label}</span>
                   </div>
-                  <h3>{step.title}</h3>
+                  <h3>
+                    <ShinyText text={step.title} {...shinyTextAppearance} />
+                  </h3>
                   <p>{step.description}</p>
                 </article>
               ))}
@@ -389,29 +493,32 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="section about" aria-labelledby="about-title">
-          <div className="section__inner">
-            <div className="about__grid">
+        <section className="section about" aria-labelledby="about-title">
+          <div id="about" className="section__inner">
+            <div className="section-heading">
+              <p className="section-kicker" data-reveal>
+                <span>03</span>
+                ABOUT 01YANG
+              </p>
               <div>
-                <p className="section-kicker" data-reveal>
-                  <span>03</span>
-                  ABOUT 01YANG
-                </p>
-                <p className="about__signature" data-reveal aria-label="创始人零一扬">
-                  ZERO
-                  <br />
-                  ONE
-                  <br />
-                  YANG
-                </p>
-              </div>
-
-              <div className="about__content">
                 <h2 id="about-title" data-reveal>
-                  生于数字时代，
-                  <br />
-                  为下一个智能时代而来。
+                  <ShinyText
+                    text={'生于数字时代，\n为下一个智能时代而来。'}
+                    {...shinyTextAppearance}
+                  />
                 </h2>
+              </div>
+            </div>
+
+            <div className="about__grid">
+              <p className="about__signature" data-reveal aria-label="创始人零一扬">
+                ZERO
+                <br />
+                ONE
+                <br />
+                YANG
+              </p>
+              <div className="about__content">
                 <div className="about__copy" data-reveal>
                   <p>
                     福州零一扬网络科技有限公司由零一扬创立。我们专注 AI 产品、软件工程与数字化服务，
@@ -442,43 +549,83 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="section contact" aria-labelledby="contact-title">
-          <div className="contact__orb contact__orb--one" aria-hidden="true" />
-          <div className="contact__orb contact__orb--two" aria-hidden="true" />
-          <div className="section__inner contact__inner">
-            <p className="section-kicker section-kicker--dark" data-reveal>
-              <span>04</span>
-              START A PROJECT
-            </p>
-            <div className="contact__content">
-              <h2 id="contact-title" data-reveal>
-                下一个从 0 到 1，
-                <br />
-                从这里开始。
-              </h2>
-              <p data-reveal>
-                如果你正在构建一款 AI 产品、升级现有系统，或希望让团队真正掌握 AI，欢迎和我们聊聊。
-              </p>
-              <a
-                className="contact__link"
-                href="mailto:hello@01yang.space"
-                data-reveal
-              >
-                <span>
-                  联系合作
-                  <small>hello@01yang.space</small>
-                </span>
-                <span className="contact__link-icon" aria-hidden="true">
-                  <ArrowRight size={28} strokeWidth={1.5} />
-                </span>
-              </a>
+        <section className="section contact" aria-labelledby="contact-title">
+          <div id="contact" className="section__inner contact__inner">
+            <div className="contact__layout">
+              <div className="section-heading contact__heading">
+                <p className="section-kicker section-kicker--dark" data-reveal>
+                  <span>04</span>
+                  START A PROJECT
+                </p>
+                <div>
+                  <h2 id="contact-title" data-reveal>
+                    <ShinyText
+                      text={'下一个从 0 到 1，\n从这里开始。'}
+                      {...shinyTextAppearance}
+                    />
+                  </h2>
+                  <p className="section-intro" data-reveal>
+                    如果你正在构建一款 AI 产品、升级现有系统，或希望让团队真正掌握 AI，欢迎和我们聊聊。
+                  </p>
+                  <div className="contact__actions" data-reveal>
+                    <SpecularButton
+                      {...specularButtonAppearance}
+                      className="contact__button"
+                      onClick={() => {
+                        window.location.href = 'mailto:1241798750@qq.com';
+                      }}
+                    >
+                      <span className="contact__button-copy">
+                        联系合作
+                        <small>1241798750@qq.com</small>
+                      </span>
+                      <span className="contact__button-icon" aria-hidden="true">
+                        <ArrowRight size={28} strokeWidth={1.5} />
+                      </span>
+                    </SpecularButton>
+                  </div>
+                </div>
+              </div>
+
+              <aside className="contact__wechat" aria-labelledby="wechat-contact-title" data-reveal>
+                <div className="contact__wechat-heading">
+                  <p>WECHAT</p>
+                  <h3 id="wechat-contact-title">微信扫码添加零一扬</h3>
+                </div>
+                <div className="contact__qr-frame">
+                  <Image
+                    src="/wechat-qr.jpg"
+                    alt="零一扬微信二维码"
+                    width={736}
+                    height={736}
+                    sizes="(max-width: 720px) 280px, 320px"
+                    unoptimized
+                  />
+                </div>
+                <p className="contact__wechat-note">扫描二维码，添加微信沟通项目。</p>
+              </aside>
             </div>
 
-            <footer className="footer">
-              <p>© 2026 福州零一扬网络科技有限公司</p>
-              <a href="#home">回到顶部 ↑</a>
-              <p>www.01yang.space</p>
-            </footer>
+            <div className="contact__bottom">
+              <div className="contact__logo-loop">
+                <LogoLoop
+                  logos={techLogos}
+                  speed={80}
+                  direction="left"
+                  logoHeight={48}
+                  gap={40}
+                  hoverSpeed={0}
+                  scaleOnHover
+                  fadeOut
+                  fadeOutColor="#050505"
+                  ariaLabel="核心技术栈"
+                />
+              </div>
+
+              <footer className="footer">
+                <p>© 2026 福州零一扬网络科技有限公司</p>
+              </footer>
+            </div>
           </div>
         </section>
       </main>

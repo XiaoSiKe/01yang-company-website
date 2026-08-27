@@ -25,7 +25,7 @@ type PillNavProps = {
 
 export default function PillNav({
   logo,
-  logoAlt = '零一扬科技',
+  logoAlt = '零一扬网络科技',
   items,
   activeHref = '#home',
   className = '',
@@ -148,69 +148,6 @@ export default function PillNav({
     return () => desktopQuery.removeEventListener('change', closeAtDesktop);
   }, []);
 
-  const resetPill = (target: HTMLAnchorElement) => {
-    gsap.set(target.querySelector('.pill-nav__fill'), { scaleY: 0 });
-    gsap.set(target.querySelector('.pill-nav__label-main'), { yPercent: 0 });
-    gsap.set(target.querySelector('.pill-nav__label-hover'), {
-      yPercent: 130,
-      autoAlpha: 0,
-    });
-  };
-
-  const handleEnter = (target: HTMLAnchorElement) => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      resetPill(target);
-      return;
-    }
-
-    gsap.to(target.querySelector('.pill-nav__fill'), {
-      scaleY: 1,
-      duration: 0.32,
-      ease,
-      overwrite: true,
-    });
-    gsap.to(target.querySelector('.pill-nav__label-main'), {
-      yPercent: -130,
-      duration: 0.32,
-      ease,
-      overwrite: true,
-    });
-    gsap.to(target.querySelector('.pill-nav__label-hover'), {
-      yPercent: 0,
-      autoAlpha: 1,
-      duration: 0.32,
-      ease,
-      overwrite: true,
-    });
-  };
-
-  const handleLeave = (target: HTMLAnchorElement) => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      resetPill(target);
-      return;
-    }
-
-    gsap.to(target.querySelector('.pill-nav__fill'), {
-      scaleY: 0,
-      duration: 0.22,
-      ease,
-      overwrite: true,
-    });
-    gsap.to(target.querySelector('.pill-nav__label-main'), {
-      yPercent: 0,
-      duration: 0.22,
-      ease,
-      overwrite: true,
-    });
-    gsap.to(target.querySelector('.pill-nav__label-hover'), {
-      yPercent: 130,
-      autoAlpha: 0,
-      duration: 0.22,
-      ease,
-      overwrite: true,
-    });
-  };
-
   const cssVars = {
     '--nav-base': baseColor,
     '--nav-pill': pillColor,
@@ -234,10 +171,11 @@ export default function PillNav({
           onClick={() => setIsMenuOpen(false)}
         >
           {logo ? (
-            <Image src={logo} alt={logoAlt} width={28} height={28} priority />
+            <Image src={logo} alt={logoAlt} width={32} height={32} priority />
           ) : (
             <span aria-hidden="true">01</span>
           )}
+          <span className="pill-nav__brand-name">{logoAlt}</span>
         </a>
 
         <div className="pill-nav__desktop">
@@ -252,18 +190,9 @@ export default function PillNav({
                 href={item.href}
                 aria-label={item.ariaLabel ?? item.label}
                 aria-current={isActive ? 'page' : undefined}
-                onMouseEnter={(event) => handleEnter(event.currentTarget)}
-                onMouseLeave={(event) => handleLeave(event.currentTarget)}
-                onFocus={(event) => handleEnter(event.currentTarget)}
-                onBlur={(event) => handleLeave(event.currentTarget)}
               >
                 <span className="pill-nav__fill" aria-hidden="true" />
-                <span className="pill-nav__label">
-                  <span className="pill-nav__label-main">{item.label}</span>
-                  <span className="pill-nav__label-hover" aria-hidden="true">
-                    {item.label}
-                  </span>
-                </span>
+                <span className="pill-nav__label">{item.label}</span>
               </a>
             );
           })}
@@ -292,11 +221,9 @@ export default function PillNav({
             <a
               key={item.href}
               href={item.href}
+              aria-label={item.ariaLabel ?? item.label}
               aria-current={activeHref === item.href ? 'page' : undefined}
-              onClick={() => {
-                setIsMenuOpen(false);
-                window.requestAnimationFrame(() => menuButtonRef.current?.focus());
-              }}
+              onClick={() => setIsMenuOpen(false)}
               tabIndex={isMenuOpen ? 0 : -1}
             >
               {item.label}
