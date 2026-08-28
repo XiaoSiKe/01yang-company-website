@@ -2,7 +2,9 @@
 
 ## React Bits
 
-The PillNav, Beams, and SpecularButton implementations in this website are adapted from:
+The PillNav, Beams, SpecularButton, CardSwap, LogoLoop, ShinyText, StrokeText,
+DepthText, and AccordionGallery components in this website use or adapt
+implementations and interaction patterns from:
 
 - React Bits by David Haz
 - Source: https://github.com/DavidHDev/react-bits
@@ -44,6 +46,20 @@ The technology marks used by LogoLoop are provided through React Icons:
 - Simple Icons: https://simpleicons.org/ — CC0 1.0 Universal
 
 Product names and trademarks remain the property of their respective owners.
+
+## Geist and Geist Mono
+
+The locally bundled Geist and Geist Mono fonts are provided through Google Fonts.
+
+- Copyright 2024 The Geist Project Authors
+- Geist: https://github.com/google/fonts/tree/main/ofl/geist
+- Geist Mono: https://github.com/google/fonts/tree/main/ofl/geistmono
+- License: SIL Open Font License 1.1. Both upstream font families provide the
+  same license text, retained in `public/licenses/Geist-OFL.txt` and published
+  at `/licenses/Geist-OFL.txt`.
+
+The build also publishes this notice at `/THIRD_PARTY_NOTICES.txt`; these files
+are included in the static artifact's checksum manifest.
 
 ## 项目占位图片：Picsum / Unsplash
 
