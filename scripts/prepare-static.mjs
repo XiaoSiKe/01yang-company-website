@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const root = 'dist/client';
@@ -9,6 +9,7 @@ if (!/^[a-f0-9]{40}$/.test(commit)) throw new Error('无法确定构建提交。
 
 // Vite 的服务端构建索引不是公开站点资源，可随构建重新生成。
 rmSync(join(root, '.vite'), { recursive: true, force: true });
+copyFileSync('THIRD_PARTY_NOTICES.md', join(root, 'THIRD_PARTY_NOTICES.txt'));
 
 writeFileSync(join(root, 'version.json'), `${JSON.stringify({
   commit,

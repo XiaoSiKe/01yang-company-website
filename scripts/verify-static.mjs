@@ -20,8 +20,11 @@ for (const name of actualFiles) {
 }
 const required = ['index.html', 'index.rsc', '404.html', 'robots.txt', 'sitemap.xml',
   'version.json', 'SHA256SUMS', '01yang-logo.jpg', 'wechat-qr.jpg', 'og.png',
+  'THIRD_PARTY_NOTICES.txt', 'licenses/Geist-OFL.txt',
   ...[1015, 1018, 1039, 1043, 1044].map((id) => `projects/${id}.jpg`)];
 for (const file of required) assert.ok(existsSync(join(root, file)), `缺少制品：${file}`);
+assert.ok(readFileSync(join(root, 'THIRD_PARTY_NOTICES.txt'), 'utf8').includes('MIT + Commons Clause'), '第三方许可声明缺失');
+assert.ok(readFileSync(join(root, 'licenses/Geist-OFL.txt'), 'utf8').includes('SIL OPEN FONT LICENSE Version 1.1'), '字体许可正文缺失');
 
 const html = readFileSync(join(root, 'index.html'), 'utf8');
 assert.ok(html.includes('福州零一扬网络科技有限公司'), '首页公司名称缺失');
