@@ -16,7 +16,8 @@
     "release:package": "bash deploy/package-release.sh",
     "ops:status": "node scripts/ops.mjs status",
     "ops:runs": "node scripts/ops.mjs runs",
-    "ops:check": "node scripts/ops.mjs check"
+    "ops:check": "node scripts/ops.mjs check",
+    "github": "node scripts/github.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "^9.7.0",

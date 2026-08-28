@@ -4,7 +4,7 @@ sources:
   website:
     type: git
     name: 零一扬官网公共源码
-    endpoint: https://github.com/01-Yang/01yang-company-website.git
+    endpoint: https://github.com/XiaoSiKe/01yang-company-website.git
     branch: main
     branchesFilter: ^main$
     triggerEvents:
