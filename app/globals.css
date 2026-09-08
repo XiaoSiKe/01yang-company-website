@@ -840,13 +840,14 @@ a {
   }
 
   .hero h1 {
+    font-size: max(26.6805px, 6.93693vw);
     letter-spacing: -0.06em;
     line-height: 1.08;
   }
 
   .hero__slogan {
     margin-top: 26px;
-    font-size: 25.289px;
+    font-size: 19.3461px;
   }
 
   .hero__date-pill {
@@ -947,7 +948,7 @@ a {
   }
 
   .hero__slogan {
-    font-size: 23.8px;
+    font-size: 18.207px;
   }
 
 }
