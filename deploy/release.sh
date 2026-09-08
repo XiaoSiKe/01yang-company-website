@@ -94,7 +94,7 @@ switched=1
 point_to "$target"
 site_get '/version.json' | cmp -s - "$target/version.json" || die '官网版本健康检查失败。'
 site_get '/' | grep '福州零一扬网络科技有限公司' > /dev/null || die '官网首页健康检查失败。'
-for file in /01yang-logo.jpg /wechat-qr.jpg /robots.txt /sitemap.xml; do
+for file in /01yang-logo.jpg /qq-qr.png /robots.txt /sitemap.xml; do
   site_get "$file" > /dev/null || die '官网关键静态资源健康检查失败。'
 done
 for extension in js css; do

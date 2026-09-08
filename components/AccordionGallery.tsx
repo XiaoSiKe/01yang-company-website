@@ -5,7 +5,8 @@ import './AccordionGallery.css';
 
 export type AccordionGalleryItem = {
   image: string;
-  label: string;
+  title: string;
+  description: string;
   link?: string;
 };
 
@@ -54,7 +55,6 @@ export default function AccordionGallery({
         const isActive = activeIndex === index;
         const content = (
           <>
-            {/* Placeholder images are kept locally until real project imagery is supplied. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               className="accordion-gallery__image"
@@ -67,10 +67,8 @@ export default function AccordionGallery({
             />
             <span className="accordion-gallery__scrim" aria-hidden="true" />
             <span className="accordion-gallery__caption">
-              <span className="accordion-gallery__number">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <span className="accordion-gallery__label">{item.label}</span>
+              <span className="accordion-gallery__title">{item.title}</span>
+              <span className="accordion-gallery__description">{item.description}</span>
             </span>
           </>
         );
@@ -80,7 +78,7 @@ export default function AccordionGallery({
             className="accordion-gallery__panel"
             data-active={isActive}
             role="listitem"
-            key={`${item.image}-${item.label}`}
+            key={`${item.image}-${item.title}`}
             onMouseEnter={() => {
               if (trigger === 'hover') setActiveIndex(index);
             }}
@@ -93,6 +91,9 @@ export default function AccordionGallery({
               <a
                 className="accordion-gallery__surface"
                 href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${item.title}：${item.description}`}
                 onClick={() => {
                   if (trigger === 'click') setActiveIndex(index);
                 }}

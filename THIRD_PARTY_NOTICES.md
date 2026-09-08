@@ -2,7 +2,7 @@
 
 ## React Bits
 
-The PillNav, Beams, SpecularButton, CardSwap, LogoLoop, ShinyText, StrokeText,
+The PillNav, ColorBends, SpecularButton, CardSwap, LogoLoop, ShinyText, StrokeText,
 DepthText, and AccordionGallery components in this website use or adapt
 implementations and interaction patterns from:
 
