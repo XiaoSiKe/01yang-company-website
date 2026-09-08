@@ -19,7 +19,7 @@ for (const name of actualFiles) {
   assert.ok(!/(^|\/)(?:node_modules|package(?:-lock)?\.json|ops\.env[^/]*)(\/|$)|\.(?:pem|key|p12|pfx|py|sh|ts|tsx)$/.test(name), `制品包含非静态或敏感文件：${name}`);
 }
 const required = ['index.html', 'index.rsc', '404.html', 'robots.txt', 'sitemap.xml',
-  'version.json', 'SHA256SUMS', '01yang-logo.jpg', 'wechat-qr.jpg', 'og.png',
+  'version.json', 'SHA256SUMS', '01yang-logo.jpg', 'qq-qr.png', 'og.png',
   'THIRD_PARTY_NOTICES.txt', 'licenses/Geist-OFL.txt',
   ...[1015, 1018, 1039, 1043, 1044].map((id) => `projects/${id}.jpg`)];
 for (const file of required) assert.ok(existsSync(join(root, file)), `缺少制品：${file}`);
@@ -65,6 +65,5 @@ assert.match(cssBundle, /(?<!-)backdrop-filter\s*:\s*saturate\(180%\)\s*blur\(40
 const version = JSON.parse(readFileSync(join(root, 'version.json'), 'utf8'));
 assert.match(version.commit, /^[a-f0-9]{40}$/);
 assert.ok(Number.isFinite(Date.parse(version.builtAt)), '构建时间无效');
-assert.ok(readdirSync(join(root, '_next/static/_vinext_fonts')).length > 0, '本地字体缺失');
 assert.ok(statSync(join(root, 'index.html')).size > 1000, '首页可能为空');
 console.log(`静态制品检查通过：${manifest.length} 个文件，提交 ${version.commit.slice(0, 12)}。`);

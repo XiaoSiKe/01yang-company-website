@@ -1,35 +1,23 @@
 'use client';
 
-import {
-  ArrowDown,
-  ArrowRight,
-  ArrowUpRight,
-  Bot,
-  Braces,
-  Cloud,
-  GraduationCap,
-  Network,
-  Pause,
-  Play,
-} from 'lucide-react';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { gsap } from 'gsap';
 import Image from 'next/image';
 import { SiNextdotjs, SiReact, SiTailwindcss, SiTypescript } from 'react-icons/si';
-import { useEffect, useRef, useState, type ComponentType, type SVGProps } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AccordionGallery from '../components/AccordionGallery';
-import Beams from '../components/ClientBeams';
-import CardSwap, { Card } from '../components/CardSwap';
+import BorderGlow from '../components/BorderGlow';
+import ColorBends from '../components/ClientColorBends';
 import LogoLoop from '../components/LogoLoop';
 import PillNav from '../components/PillNav';
-import ShinyText, { type ShinyTextProps } from '../components/ShinyText';
 import SpecularButton, { type SpecularButtonProps } from '../components/SpecularButton';
 import StrokeDepthText from '../components/StrokeDepthText';
 
 const navigation = [
   { label: '首页', href: '#home' },
   { label: '关于零一', href: '#about' },
-  { label: '服务与合作', href: '#services' },
-  { label: '联系', href: '#contact' },
+  { label: '产品与服务', href: '#services' },
+  { label: '联系与合作', href: '#contact' },
 ];
 
 const specularButtonAppearance = {
@@ -51,16 +39,15 @@ const specularButtonAppearance = {
   autoAnimate: false,
 } satisfies SpecularButtonProps;
 
-const shinyTextAppearance = {
-  speed: 2,
-  delay: 0,
-  color: 'rgba(255, 255, 255, 0.78)',
-  shineColor: '#ffffff',
-  spread: 120,
-  direction: 'left',
-  yoyo: false,
-  pauseOnHover: false,
-} satisfies Omit<ShinyTextProps, 'text'>;
+const borderGlowAppearance = {
+  edgeSensitivity: 30,
+  backgroundColor: '#000000',
+  borderRadius: 28,
+  glowRadius: 40,
+  glowIntensity: 1,
+  coneSpread: 25,
+  animated: false,
+};
 
 const techLogos = [
   { node: <SiReact />, title: 'React', href: 'https://react.dev' },
@@ -74,90 +61,42 @@ const techLogos = [
 ];
 
 const projectItems = [
-  { image: '/projects/1015.jpg', label: 'AI SaaS' },
-  { image: '/projects/1018.jpg', label: '模型服务' },
-  { image: '/projects/1039.jpg', label: '软件开发' },
-  { image: '/projects/1043.jpg', label: '网络服务' },
-  { image: '/projects/1044.jpg', label: 'AI 教育' },
-];
-
-type Icon = ComponentType<SVGProps<SVGSVGElement>>;
-
-const services: Array<{
-  number: string;
-  title: string;
-  englishTitle: string;
-  description: string;
-  tags: string[];
-  icon: Icon;
-  featured?: boolean;
-}> = [
   {
-    number: '01',
-    title: 'AI SaaS 服务',
-    englishTitle: 'AI PRODUCTS',
-    description:
-      '从场景梳理、产品设计到持续迭代，把模型能力封装成清晰、稳定、真正有人使用的智能产品。',
-    tags: ['智能工作流', 'Agent 应用', '业务自动化'],
-    icon: Bot,
-    featured: true,
+    image: '/projects/1015.jpg',
+    title: '第二十五小时',
+    description: '建筑生模拟器',
+    link: 'https://arch.25thgame.vip',
   },
   {
-    number: '02',
-    title: 'AI 模型 API 服务',
-    englishTitle: 'MODEL ACCESS',
-    description:
-      '整合多模型调用链路，提供统一接入、用量管理与工程支持，降低团队使用 AI 的技术门槛。',
-    tags: ['统一接口', '模型接入', '调用管理'],
-    icon: Network,
+    image: '/projects/1039.jpg',
+    title: '零一 API',
+    description: '从零到一，连接每一次模型调用！',
+    link: 'https://api.01yapi.com/',
   },
   {
-    number: '03',
-    title: '软件定制开发',
-    englishTitle: 'SOFTWARE',
-    description:
-      '围绕业务目标完成 Web、移动端、后台系统与自动化工具开发，让创意快速成为可运行的产品。',
-    tags: ['Web 应用', '系统开发', '技术咨询'],
-    icon: Braces,
-  },
-  {
-    number: '04',
-    title: '网络技术服务',
-    englishTitle: 'INFRASTRUCTURE',
-    description:
-      '提供云端架构、部署集成与运维支持，让产品从上线第一天起就拥有清晰、可靠的技术底座。',
-    tags: ['云端部署', '系统集成', '运行维护'],
-    icon: Cloud,
-  },
-  {
-    number: '05',
-    title: 'AI 教育与培训',
-    englishTitle: 'AI EDUCATION',
-    description:
-      '面向个人与团队提供 AI 工具、智能体和自动化实践培训，把新的技术能力转化为工作生产力。',
-    tags: ['企业内训', '实战课程', '能力共创'],
-    icon: GraduationCap,
+    image: '/projects/1043.jpg',
+    title: '零一 AI 日新社',
+    description: '福州大学学生社团',
+    link: 'https://club.01aiedu.com',
   },
 ];
 
-const process = [
+const capabilities = [
   {
-    number: '01',
-    label: 'DEFINE',
-    title: '先定义真正的问题',
-    description: '从目标、用户与约束出发，找到值得被技术解决的核心问题。',
+    title: 'AI 应用与 SaaS 开发',
+    description: '从需求梳理开始，完成交互设计、前后端开发与上线交付，提供持续维护和版本迭代支持，让想法逐步成为可长期运行的 SaaS 产品。',
   },
   {
-    number: '02',
-    label: 'BUILD',
-    title: '再构建可用的产品',
-    description: '用设计、工程与 AI 能力快速验证，并沉淀为稳定的产品体验。',
+    title: 'AI 技术教育',
+    description: '围绕 AI 工具使用、提示设计、AI 编程与真实业务流程，为企业、学校和团队设计培训与实践课程，帮助参与者建立可复用方法和操作能力。',
   },
   {
-    number: '03',
-    label: 'GROW',
-    title: '持续走向更好',
-    description: '根据真实反馈迭代，让产品、团队与业务一起获得长期成长。',
+    title: '模型接入支持',
+    description: '支持主流大模型 API、兼容接口与 Token 使用场景，完成鉴权、调用链路、成本与稳定性优化，并协助排查限流、超时与接入故障。',
+  },
+  {
+    title: '网络基础设施',
+    description: '提供服务器与云环境配置、域名解析、HTTPS、网络部署和基础运维，兼顾上线效率、安全隔离与可维护性，为其稳定运行提供底层支撑。',
   },
 ];
 
@@ -191,44 +130,29 @@ function usePageMotion(rootRef: React.RefObject<HTMLElement | null>) {
           );
 
           gsap.utils.toArray<HTMLElement>('[data-reveal]').forEach((element) => {
-            gsap.fromTo(
-              element,
-              { autoAlpha: 0, y: 42 },
-              {
-                autoAlpha: 1,
-                y: 0,
-                duration: 0.78,
-                ease: 'power3.out',
-                scrollTrigger: {
-                  trigger: element,
-                  start: 'top 86%',
-                  once: true,
-                },
+            ScrollTrigger.create({
+              trigger: element,
+              start: 'top 86%',
+              once: true,
+              onEnter: () => {
+                gsap.fromTo(
+                  element,
+                  { autoAlpha: 0, y: 36 },
+                  {
+                    autoAlpha: 1,
+                    y: 0,
+                    duration: 0.78,
+                    ease: 'power3.out',
+                    clearProps: 'transform,opacity,visibility',
+                  },
+                );
               },
-            );
-          });
-
-          gsap.utils.toArray<HTMLElement>('[data-line-reveal]').forEach((element) => {
-            gsap.fromTo(
-              element,
-              { scaleX: 0 },
-              {
-                scaleX: 1,
-                duration: 1,
-                ease: 'power3.out',
-                transformOrigin: 'left center',
-                scrollTrigger: {
-                  trigger: element,
-                  start: 'top 90%',
-                  once: true,
-                },
-              },
-            );
+            });
           });
         });
 
         motionPreference?.add('(prefers-reduced-motion: reduce)', () => {
-          gsap.set('[data-hero-reveal], [data-reveal], [data-line-reveal]', {
+          gsap.set('[data-hero-reveal], [data-reveal]', {
             clearProps: 'transform,opacity,visibility',
           });
         });
@@ -252,7 +176,6 @@ function useActiveSection() {
     const sectionMappings = [
       { selector: '#home', activeHref: '#home' },
       { selector: '#services', activeHref: '#services' },
-      { selector: '#approach', activeHref: '#services' },
       { selector: '#about', activeHref: '#about' },
       { selector: '#contact', activeHref: '#contact' },
     ];
@@ -288,7 +211,6 @@ function useActiveSection() {
 
 export default function Home() {
   const pageRef = useRef<HTMLElement>(null);
-  const [isServiceSwapPaused, setIsServiceSwapPaused] = useState(false);
   const activeHref = useActiveSection();
   usePageMotion(pageRef);
 
@@ -312,21 +234,30 @@ export default function Home() {
 
       <main ref={pageRef} id="main-content" className="site-shell">
         <div className="site-background" aria-hidden="true">
-          <Beams
-            beamWidth={2}
-            beamHeight={15}
-            beamNumber={16}
-            lightColor="#ffffff"
-            speed={5.2}
-            noiseIntensity={1.75}
-            scale={0.2}
-            rotation={33}
+          <ColorBends
+            colors={['#f5f5f5', '#8f8f8f', '#d8d8d8']}
+            rotation={90}
+            speed={0.2}
+            scale={1}
+            frequency={1}
+            warpStrength={1}
+            mouseInfluence={1}
+            noise={0.15}
+            parallax={0.5}
+            iterations={1}
+            intensity={1.5}
+            bandWidth={6}
+            transparent
           />
           <div className="site-background__veil" />
         </div>
 
         <section id="home" className="hero" aria-labelledby="hero-title">
           <div className="hero__content">
+            <p className="hero__brand-pill" data-hero-reveal>
+              <span aria-hidden="true">01</span>
+              FUZHOU 01YANG NETWORK TECHNOLOGY CO., LTD.
+            </p>
             <h1 id="hero-title">
               <StrokeDepthText text="福州零一扬网络科技有限公司" letterSpacing={-3.92} />
             </h1>
@@ -334,13 +265,17 @@ export default function Home() {
               <StrokeDepthText text="从零到一， 让人工智能真正落地！" letterSpacing={-3.11} />
             </p>
 
+            <a className="hero__date-pill" href="#about" data-hero-reveal>
+              成立于 · <time dateTime="2026-01-26">2026.1.26</time>
+            </a>
+
             <div className="hero__actions" aria-label="首页操作" data-hero-reveal>
               <SpecularButton
                 {...specularButtonAppearance}
                 className="hero__specular-button"
                 onClick={() => document.querySelector('#services')?.scrollIntoView()}
               >
-                探索我们的服务
+                产品与服务
                 <ArrowDown size={17} strokeWidth={1.8} aria-hidden="true" />
               </SpecularButton>
               <SpecularButton
@@ -348,7 +283,7 @@ export default function Home() {
                 className="hero__specular-button"
                 onClick={() => document.querySelector('#contact')?.scrollIntoView()}
               >
-                开始合作
+                联系与合作
                 <ArrowUpRight size={17} strokeWidth={1.8} aria-hidden="true" />
               </SpecularButton>
             </div>
@@ -356,195 +291,71 @@ export default function Home() {
 
         </section>
 
-        <section className="section services" aria-labelledby="services-title">
-          <div id="services" className="section__inner">
-            <div className="services__layout">
-              <div className="section-heading services__heading">
-                <p className="section-kicker" data-reveal>
-                  <span>01</span>
-                  WHAT WE BUILD
-                </p>
-                <div>
-                  <h2 id="services-title" data-reveal>
-                    <ShinyText
-                      text={'把 AI 能力，\n变成真正可用的产品。'}
-                      {...shinyTextAppearance}
-                    />
-                  </h2>
-                  <p className="section-intro" data-reveal>
-                    不追逐概念，只围绕真实需求构建清晰、可靠、可持续迭代的数字化解决方案。
-                  </p>
-                </div>
-              </div>
-
-              <div className="service-swap-stage" data-reveal>
-                <CardSwap
-                  cardDistance={60}
-                  verticalDistance={70}
-                  delay={5000}
-                  pauseOnHover={false}
-                  paused={isServiceSwapPaused}
-                >
-                  {services.map((service) => {
-                    const ServiceIcon = service.icon;
-                    const titleId = `service-${service.number}-title`;
-
-                    return (
-                      <Card
-                        key={service.number}
-                        className={`service-card${
-                          service.featured ? ' service-card--featured' : ''
-                        }`}
-                        aria-labelledby={titleId}
-                      >
-                        <div className="service-card__top">
-                          <span className="service-card__number">{service.number}</span>
-                          <span className="service-card__icon" aria-hidden="true">
-                            <ServiceIcon width={22} height={22} strokeWidth={1.6} />
-                          </span>
-                        </div>
-                        <div className="service-card__body">
-                          <p>{service.englishTitle}</p>
-                          <h3 id={titleId}>
-                            <ShinyText text={service.title} {...shinyTextAppearance} />
-                          </h3>
-                          <p className="service-card__description">{service.description}</p>
-                        </div>
-                        <ul className="tag-list" aria-label={`${service.title}能力`}>
-                          {service.tags.map((tag) => (
-                            <li key={tag}>{tag}</li>
-                          ))}
-                        </ul>
-                      </Card>
-                    );
-                  })}
-                </CardSwap>
-                <SpecularButton
-                  {...specularButtonAppearance}
-                  size="sm"
-                  className="service-swap-control"
-                  onClick={() => setIsServiceSwapPaused((isPaused) => !isPaused)}
-                >
-                  {isServiceSwapPaused ? (
-                    <Play size={14} strokeWidth={1.8} aria-hidden="true" />
-                  ) : (
-                    <Pause size={14} strokeWidth={1.8} aria-hidden="true" />
-                  )}
-                  {isServiceSwapPaused ? '继续轮换' : '暂停轮换'}
-                </SpecularButton>
-              </div>
-            </div>
-
-            <div className="services__projects" data-reveal>
-              <div className="services__projects-heading">
-                <p>PROJECTS / COMING SOON</p>
-                <h3>
-                  <ShinyText text="项目实践" {...shinyTextAppearance} />
-                </h3>
-                <p>这里将逐步收录零一扬的产品、合作项目与技术实践。</p>
-              </div>
-              <AccordionGallery
-                items={projectItems}
-                defaultIndex={2}
-                expandRatio={0.52}
-                trigger="hover"
-                ariaLabel="项目实践预览"
-              />
-            </div>
-          </div>
-        </section>
-
-        <section className="section approach" aria-labelledby="approach-title">
-          <div id="approach" className="section__inner">
-            <div className="section-heading">
-              <p className="section-kicker section-kicker--dark" data-reveal>
-                <span>02</span>
-                HOW WE WORK
-              </p>
-              <div>
-                <h2 id="approach-title" data-reveal>
-                  <ShinyText
-                    text={'不只交付代码，\n更交付一条从想法到价值的路径。'}
-                    {...shinyTextAppearance}
-                  />
-                </h2>
-                <p className="section-intro" data-reveal>
-                  技术只是手段。我们把产品判断、体验设计与工程能力放在同一个目标下，
-                  让每一步都更接近真实价值。
-                </p>
-              </div>
-            </div>
-
-            <div className="process-list">
-              {process.map((step) => (
-                <article className="process-step" key={step.number} data-reveal>
-                  <span className="process-step__line" data-line-reveal aria-hidden="true" />
-                  <div className="process-step__meta">
-                    <span>{step.number}</span>
-                    <span>{step.label}</span>
-                  </div>
-                  <h3>
-                    <ShinyText text={step.title} {...shinyTextAppearance} />
-                  </h3>
-                  <p>{step.description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="section about" aria-labelledby="about-title">
           <div id="about" className="section__inner">
-            <div className="section-heading">
-              <p className="section-kicker" data-reveal>
-                <span>03</span>
-                ABOUT 01YANG
-              </p>
-              <div>
-                <h2 id="about-title" data-reveal>
-                  <ShinyText
-                    text={'生于数字时代，\n为下一个智能时代而来。'}
-                    {...shinyTextAppearance}
-                  />
-                </h2>
-              </div>
+            <div className="section-heading section-heading--reference">
+              <h2 className="home-flow-title" id="about-title" data-reveal>
+                关于零一
+              </h2>
             </div>
 
-            <div className="about__grid">
-              <p className="about__signature" data-reveal aria-label="创始人零一扬">
-                ZERO
-                <br />
-                ONE
-                <br />
-                YANG
-              </p>
-              <div className="about__content">
-                <div className="about__copy" data-reveal>
-                  <p>
-                    福州零一扬网络科技有限公司由零一扬创立。我们专注 AI 产品、软件工程与数字化服务，
-                    帮助企业、团队和创造者把新的技术能力转化为真正可用的产品。
-                  </p>
-                  <p>
-                    “零一”代表从无到有的创造，“扬”代表让价值被看见。我们相信，好技术应当清晰、可靠，
-                    并且最终服务于真实的人。
-                  </p>
-                </div>
+            <div data-reveal>
+              <BorderGlow {...borderGlowAppearance} className="about-glow">
+                <div className="about-panel">
+                  <div className="about-panel__intro">
+                    <h3 className="about-panel__title">从零到一，让人工智能真正落地！</h3>
+                    <div className="about-panel__facts">
+                      <p><strong>零一扬网络科技成立于 2026 年 1 月 26 日，创始人：零一扬</strong></p>
+                    </div>
+                    <p>
+                      福州零一扬网络科技有限公司专注于 AI 应用与软件工程，
+                      <br />
+                      为企业及团队提供 SaaS 开发、AI 教育、模型 API 与 Token 支持、网络及云基础设施服务。
+                    </p>
+                    <p>
+                      从需求梳理、方案设计到开发交付与部署运行，
+                      <br />
+                      我们关注产品体验、系统稳定性与长期维护效率，
+                      <br />
+                      让技术更快进入真实场景，并持续创造价值。
+                    </p>
+                  </div>
 
-                <dl className="about__facts" data-reveal>
-                  <div>
-                    <dt>公司</dt>
-                    <dd>福州零一扬网络科技有限公司</dd>
+                  <h3 className="about-panel__subheading">我们在做什么？</h3>
+                  <div className="capability-grid" aria-label="零一扬的服务能力">
+                    {capabilities.map((capability) => (
+                      <article className="capability-card" key={capability.title}>
+                        <h4>{capability.title}</h4>
+                        <p>{capability.description}</p>
+                      </article>
+                    ))}
                   </div>
-                  <div>
-                    <dt>创始人</dt>
-                    <dd>零一扬</dd>
-                  </div>
-                  <div>
-                    <dt>服务方向</dt>
-                    <dd>AI · 软件 · 网络 · 教育</dd>
-                  </div>
-                </dl>
-              </div>
+                </div>
+              </BorderGlow>
+            </div>
+          </div>
+        </section>
+
+        <section className="section services" aria-labelledby="services-title">
+          <div id="services" className="section__inner">
+            <div className="section-heading section-heading--reference">
+              <h2 className="home-flow-title" id="services-title" data-reveal>
+                产品与服务
+              </h2>
+            </div>
+
+            <div className="project-gallery" data-reveal>
+              <BorderGlow {...borderGlowAppearance} className="project-gallery__glow">
+                <div className="project-gallery__frame">
+                  <AccordionGallery
+                    items={projectItems}
+                    defaultIndex={1}
+                    expandRatio={0.52}
+                    trigger="hover"
+                    ariaLabel="项目实践预览"
+                  />
+                </div>
+              </BorderGlow>
             </div>
           </div>
         </section>
@@ -552,58 +363,40 @@ export default function Home() {
         <section className="section contact" aria-labelledby="contact-title">
           <div id="contact" className="section__inner contact__inner">
             <div className="contact__layout">
-              <div className="section-heading contact__heading">
-                <p className="section-kicker section-kicker--dark" data-reveal>
-                  <span>04</span>
-                  START A PROJECT
-                </p>
+              <div className="section-heading section-heading--reference contact__heading">
                 <div>
-                  <h2 id="contact-title" data-reveal>
-                    <ShinyText
-                      text={'下一个从 0 到 1，\n从这里开始。'}
-                      {...shinyTextAppearance}
-                    />
+                  <h2 className="home-flow-title" id="contact-title" data-reveal>
+                    联系与合作
                   </h2>
-                  <p className="section-intro" data-reveal>
-                    如果你正在构建一款 AI 产品、升级现有系统，或希望让团队真正掌握 AI，欢迎和我们聊聊。
-                  </p>
-                  <div className="contact__actions" data-reveal>
-                    <SpecularButton
-                      {...specularButtonAppearance}
-                      className="contact__button"
-                      onClick={() => {
-                        window.location.href = 'mailto:1241798750@qq.com';
-                      }}
-                    >
-                      <span className="contact__button-copy">
-                        联系合作
-                        <small>1241798750@qq.com</small>
-                      </span>
-                      <span className="contact__button-icon" aria-hidden="true">
-                        <ArrowRight size={28} strokeWidth={1.5} />
-                      </span>
-                    </SpecularButton>
+                  <div className="section-intro contact__intro" data-reveal>
+                    <p>
+                      无论你正在规划 SaaS 产品、接入 AI 模型与 Token 服务、搭建网络基础设施，
+                      <br />
+                      还是开展 AI 教育与团队培训，
+                    </p>
+                    <p>欢迎联系我们，聊聊你的需求与合作设想。</p>
+                  </div>
+                  <h3 className="contact__tagline" data-reveal>
+                    下一个从零到一，从这里开始！
+                  </h3>
+                  <div className="contact__qq-reveal" data-reveal>
+                    <BorderGlow {...borderGlowAppearance} className="contact__qq-glow">
+                      <aside className="contact__qq" aria-label="QQ 联系方式">
+                        <div className="contact__qr-frame">
+                          <Image
+                            src="/qq-qr.png"
+                            alt="零一扬 QQ 二维码"
+                            width={920}
+                            height={920}
+                            sizes="(max-width: 720px) 280px, 320px"
+                            unoptimized
+                          />
+                        </div>
+                      </aside>
+                    </BorderGlow>
                   </div>
                 </div>
               </div>
-
-              <aside className="contact__wechat" aria-labelledby="wechat-contact-title" data-reveal>
-                <div className="contact__wechat-heading">
-                  <p>WECHAT</p>
-                  <h3 id="wechat-contact-title">微信扫码添加零一扬</h3>
-                </div>
-                <div className="contact__qr-frame">
-                  <Image
-                    src="/wechat-qr.jpg"
-                    alt="零一扬微信二维码"
-                    width={736}
-                    height={736}
-                    sizes="(max-width: 720px) 280px, 320px"
-                    unoptimized
-                  />
-                </div>
-                <p className="contact__wechat-note">扫描二维码，添加微信沟通项目。</p>
-              </aside>
             </div>
 
             <div className="contact__bottom">
@@ -624,8 +417,7 @@ export default function Home() {
 
               <footer className="footer">
                 <p>
-                  © 2026 福州零一扬网络科技有限公司
-                  <br />
+                  <span>© 2026 福州零一扬网络科技有限公司</span>
                   <a
                     className="footer__icp"
                     href="https://beian.miit.gov.cn/"
@@ -633,6 +425,14 @@ export default function Home() {
                     rel="noopener noreferrer"
                   >
                     闽ICP备2026024313号-2
+                  </a>
+                  <a
+                    className="footer__public-security"
+                    href="https://beian.mps.gov.cn/#/query/webSearch?code=35011102351274"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    闽公网安备35011102351274号
                   </a>
                 </p>
               </footer>
