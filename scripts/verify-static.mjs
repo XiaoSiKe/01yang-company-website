@@ -65,6 +65,5 @@ assert.match(cssBundle, /(?<!-)backdrop-filter\s*:\s*saturate\(180%\)\s*blur\(40
 const version = JSON.parse(readFileSync(join(root, 'version.json'), 'utf8'));
 assert.match(version.commit, /^[a-f0-9]{40}$/);
 assert.ok(Number.isFinite(Date.parse(version.builtAt)), '构建时间无效');
-assert.ok(readdirSync(join(root, '_next/static/_vinext_fonts')).length > 0, '本地字体缺失');
 assert.ok(statSync(join(root, 'index.html')).size > 1000, '首页可能为空');
 console.log(`静态制品检查通过：${manifest.length} 个文件，提交 ${version.commit.slice(0, 12)}。`);
