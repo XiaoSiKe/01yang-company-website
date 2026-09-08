@@ -19,7 +19,9 @@ for (const name of actualFiles) {
   assert.ok(!/(^|\/)(?:node_modules|package(?:-lock)?\.json|ops\.env[^/]*)(\/|$)|\.(?:pem|key|p12|pfx|py|sh|ts|tsx)$/.test(name), `制品包含非静态或敏感文件：${name}`);
 }
 const required = ['index.html', 'index.rsc', '404.html', 'robots.txt', 'sitemap.xml',
-  'version.json', 'SHA256SUMS', '01yang-logo.jpg', 'qq-qr.png', 'og.png',
+  'version.json', 'SHA256SUMS', '01yang-logo.jpg', 'qq-qr.png',
+  'wechat-qr.jpg', // 兼容服务器上尚未更新的发布健康检查；内容同为 QQ 二维码。
+  'og.png',
   'THIRD_PARTY_NOTICES.txt', 'licenses/Geist-OFL.txt',
   ...[1015, 1018, 1039, 1043, 1044].map((id) => `projects/${id}.jpg`)];
 for (const file of required) assert.ok(existsSync(join(root, file)), `缺少制品：${file}`);
